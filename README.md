@@ -1,15 +1,16 @@
 # project-phonepe-transaction
-PhonePe Digital Payment Data Analysis & Dashboard
-Project Overview
+
+#PhonePe Digital Payment Data Analysis & Dashboard
+#Project Overview
 With increasing reliance on digital payment systems like PhonePe, understanding transaction dynamics, user engagement, and insurance data is crucial for service improvement and user targeting. This project extracts, analyzes, and visualizes PhonePe aggregate datasets across payment categories, insurance, geographical trends, and user activity. The final deliverable is an interactive Streamlit dashboard for real-time exploration and insights.
-Approach
-Data Extraction & ETL
-Clone PhonePe Pulse Dataset.
+#Approach
+#Data Extraction & ETL
+#Clone PhonePe Pulse Dataset.
 
 ETL process using Python (pandas) to load/transform data.
 
-SQL Database & Tables
-Set up MySQL/PostgreSQL database.
+#SQL Database & Tables
+Set up MySQL.
 
 Aggregated Tables: Aggregated_user, Aggregated_transaction, Aggregated_insurance
 
@@ -19,7 +20,7 @@ Top Tables: Top_user, Top_map, Top_insurance
 
 Store data using well-structured schemas.
 
-SQL Data Analysis
+#SQL Data Analysis
 Write SQL queries for all business cases.
 Sample queries included for segmentation, fraud, region, retention, and benchmarking.
 
@@ -27,7 +28,7 @@ Analysis & Visualization
 Use Python (pandas, matplotlib, seaborn) to process query results.
 Visualize with bar charts, pie charts, and maps.
 
-Dashboard
+#Dashboard
 Build an interactive dashboard with Streamlit for data exploration.
 Results & Skills
 ETL and integration proficiency
@@ -38,7 +39,7 @@ Interactive Python dashboards with clear visualizations
 
 Data-driven insights for actionable business recommendations
 
-Project Evaluation
+#Project Evaluation
 Code Quality: Python and SQL best practices
 
 Query Efficiency: Fast, accurate SQL statements
@@ -54,3 +55,13 @@ Python SQL Streamlit Data Visualization ETL Data Analysis
 
 Dataset
 PhonePe Pulse GitHub Repository
+Visualization Techniques Used
+
+Interactive Dashboard – Built with Streamlit, allowing filtering by year, quarter, and state.- Ranking Analysis – Displays only the top-performing states, districts, and pincodes in descending order based on transaction amount and registered users.
+Bar Graphs – All visualizations are shown as bar graphs for clear ranking comparisons.
+Benefits of This Analysis
+
+Enhanced Decision-Making – Helps identify high-performing regions for targeted marketing or resource allocation.
+Regional Performance Tracking – Tracks the growth and adoption of PhonePe in different parts of India.
+Market Insights – Highlights areas with high adoption and transaction activity.
+This project offers a focused, data-driven view into PhonePe’s top-performing regions, using only bar graphs for a simple and effective visual comparison.
