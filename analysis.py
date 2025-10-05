@@ -74,9 +74,7 @@ with st.sidebar:
             padding-bottom: 10px;
         }
         </style>
-        <div class="sidebar-footer">
-            PROJECT BY — <b>DHANUSHKUMAR S</b>
-        </div>
+        
         """,
         unsafe_allow_html=True
     )
@@ -520,3 +518,4 @@ elif select == "BUSINESS CASES" :
             district_summary = Map_User.groupby(['state', 'district_name'])[['registeredUsers', 'appOpens']].sum().sort_values(by='registeredUsers', ascending=False)
             st.subheader('Top Districts by Registered Users')
             st.dataframe(district_summary.head(20))
+
