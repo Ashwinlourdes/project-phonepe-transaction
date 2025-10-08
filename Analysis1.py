@@ -664,16 +664,20 @@ elif select == "BUSINESS CASES" :
 
         st.markdown(f"#### Transaction Types by State: {states}, Quarter {quarters}")
         Agg_tran_type(Agg_tran_tac_y_Q, states)
-        Payment_category=pd.read_csv('D:\phonepe project\my_data2')
+        Payment_category = A_transaction.rename(columns={'Years': 'Year', 'Transaction_amount': 'Total_Amount'})
+        # Plot Total Transaction trend by Transaction type
         st.subheader('Total Transaction trend by Transaction type')
         fig, ax = plt.subplots(figsize=(12, 9))
         sns.lineplot(data=Payment_category, x="Year", y="Total_Amount", hue="Transaction_type", marker="o", palette='Set1', ax=ax)
         ax.set_xlabel("Year")
         ax.set_ylabel("Total Amount")
-        ax.legend(title="State", bbox_to_anchor=(1.05, 1), loc='upper left')
+        ax.legend(title="Transaction Type", bbox_to_anchor=(1.05, 1), loc='upper left')
         st.pyplot(fig)
 
-        top_states = pd.read_csv('D:\phonepe project\my_data.csv')
+        top_states = A_transaction.groupby(['Years', 'States'], as_index=False).agg({'Transaction_amount': 'sum'})
+        top_states = top_states.rename(columns={'Years': 'Year', 'States': 'State', 'Transaction_amount': 'Total_Amount'})
+
+        # Plot Total Transaction Amount Trend by State
         st.subheader('Total Transaction Amount Trend by State')
         fig, ax = plt.subplots(figsize=(12, 9))
         sns.lineplot(data=top_states, x="Year", y="Total_Amount", hue="State", marker="o", palette='Set1', ax=ax)
@@ -683,25 +687,30 @@ elif select == "BUSINESS CASES" :
         ax.legend(title="State", bbox_to_anchor=(1.05, 1), loc='upper left')
         st.pyplot(fig)
 
-    
+            
     elif cases == "Device Dominance and User Engagement Analysis":
     
         st.subheader("Top Device Brands and Their Transaction Volume")
         col1, col2 = st.columns(2)
         with col1:
             years = st.slider("Select Year", A_user["Years"].min(), A_user["Years"].max(), A_user["Years"].min())
+        
+        st.subheader("YEAR WISE BRANDS AND TRANSACTION COUNT")
         A_user_y = Agg_user_plot_1(A_user, years)
         with col2:
             quarters = st.slider("Select Quarter", A_user_y["Quarter"].min(), A_user_y["Quarter"].max(), A_user_y["Quarter"].min())
+        st.subheader("QUARTER WISE BRANDS AND TRANSACTION COUNT")
         A_user_y_Q = Agg_user_plot_2(A_user_y, quarters)
-        Merged=pd.read_csv('D:\phonepe project\my_data4')
+        
 
 
         st.subheader("User Engagement Trends Across the Nation")
         col1, col2 = st.columns(2)
         with col1:
+            st.subheader("Year Wise RegisterUers and AppOpens")
             Map_user_Y = map_user_plot_1(M_user, years)
         with col2:
+            st.subheader("Quarter Wise RegisterUers and AppOpens")
             Map_user_Y_Q = map_user_plot_2(Map_user_Y, quarters)
 
         st.subheader("Statewise Device Popularity and User Activity")
@@ -712,6 +721,7 @@ elif select == "BUSINESS CASES" :
         Agg_user_plot_3(A_user_y_Q, states)
         st.markdown(f"#### User Engagement Bar Charts for {states} ({years}, Q{quarters})")
         map_user_plot_3(Map_user_Y_Q, states)
+        Merged=pd.read_csv('D:\phonepe project\my_data4')
         brand_data = Merged.groupby('brand')[['registeredusers', 'appopens']].sum().reset_index()
         brand_data['engagement_ratio'] = brand_data['appopens'] / brand_data['registeredusers']
         underutilized = brand_data.sort_values(by='engagement_ratio').head(5)
@@ -721,17 +731,21 @@ elif select == "BUSINESS CASES" :
         ax.set_ylabel("App Opens per Registered User")
         plt.xticks(rotation=45)
         st.pyplot(fig)
-
-        Merged=pd.read_csv('D:\phonepe project\my_data4')
-        top_brands = Merged.groupby('brand')['count'].sum().sort_values(ascending=False)
+            
+        brand_data = A_user.groupby('Brands').agg({
+        'Transaction_count': 'sum',
+                'Percentage': 'mean'  # or any other metric approximating app opens if available
+            }).reset_index()
+        top_brands = brand_data.sort_values('Transaction_count', ascending=False)
         st.subheader('Top Device Brands by Total Users')
         fig, ax = plt.subplots(figsize=(10, 6))
-        top_brands.plot(kind='bar', color='skyblue', ax=ax)
+        sns.barplot(data=top_brands, x='Brands', y='Transaction_count', ax=ax, color='skyblue')
         ax.set_xlabel('Device Brand')
         ax.set_ylabel('Total Users')
         plt.xticks(rotation=45)
         plt.tight_layout()
         st.pyplot(fig)
+
 
 
     elif cases == "Transaction Analysis for Market Expansion":
@@ -748,65 +762,63 @@ elif select == "BUSINESS CASES" :
             states = st.selectbox("Select State for In-Depth Analysis", Map_tran_tac_y["States"].unique())
         st.markdown(f"#### District-Level Transaction Overview for {states} ({years})")
         Map_insu_Districts(Map_tran_tac_y, states)
-        Map_Trans=pd.read_csv('D:\phonepe project\my_data7')
-        state_summary = Map_Trans.groupby('state').agg({
-                'Transacion_amount': 'sum',
-                'count': 'sum'
-            }).reset_index()
-
-        state_summary['avg_transaction_value'] = state_summary['Transacion_amount'] / state_summary['count']
-        st.subheader(" Average Transaction value for State")
+        
+        df = M_transaction.rename(columns={
+            'States': 'state', 
+            'Years': 'year', 
+            'Transaction_count': 'count', 
+            'Transaction_amount': 'Transaction_amount'  # Adjust spelling if needed
+        })
+            
+        if 'Transacion_amount' in df.columns:
+            df = df.rename(columns={'Transacion_amount': 'Transaction_amount'})
+        state_summary = df.groupby('state').agg({
+            'Transaction_amount': 'sum',
+            'count': 'sum'
+        }).reset_index()
+        state_summary['avg_transaction_value'] = state_summary['Transaction_amount'] / state_summary['count']
+        st.subheader("Average Transaction Value by State")
         st.dataframe(state_summary[['state', 'avg_transaction_value']].sort_values(by='avg_transaction_value', ascending=False))
-        state_summary = Map_Trans.groupby('state').agg({
-                'count': 'sum',
-                'Transacion_amount': 'sum'
-            }).reset_index()
-        state_summary = state_summary.sort_values(by='Transacion_amount', ascending=False)
+        state_summary_sorted = state_summary.sort_values(by='Transaction_amount', ascending=False)
         st.subheader("Top 10 States by Total Transaction Amount")
         fig, ax = plt.subplots(figsize=(7, 5))
-        sns.barplot(data=state_summary.head(10), x='Transacion_amount', y='state', palette='viridis', ax=ax)
+        sns.barplot(data=state_summary_sorted.head(10), x='Transaction_amount', y='state', palette='viridis', ax=ax)
         ax.set_xlabel('Transaction Amount (₹)')
         ax.set_ylabel('State')
         st.pyplot(fig)
 
-        annual_summary = Map_Trans.groupby(['state', 'year']).agg({
-                'count': 'sum',
-                'Transacion_amount': 'sum'
-            }).reset_index()
+        # Annual summary for YoY growth calculation
+        annual_summary = df.groupby(['state', 'year']).agg({
+            'count': 'sum',
+            'Transaction_amount': 'sum'
+        }).reset_index()
 
         annual_summary = annual_summary.sort_values(by=['state', 'year'])
+        annual_summary['Transaction_amount_YoY_growth'] = annual_summary.groupby('state')['Transaction_amount'].pct_change() * 100
 
-        annual_summary['Transaction_amount_YoY_growth'] = annual_summary.groupby('state')['Transacion_amount'].pct_change() * 100
-
-            # Latest year growth
+        # Latest year YoY growth bar plot
         latest_year = annual_summary['year'].max()
-        growth_latest_year = annual_summary[annual_summary['year'] == latest_year]
-        growth_latest_year = growth_latest_year.sort_values(by='Transaction_amount_YoY_growth', ascending=False)
-        latest_year = annual_summary['year'].max()
-        growth_latest_year = annual_summary[annual_summary['year'] == latest_year]
-        growth_latest_year = growth_latest_year.sort_values(by='Transaction_amount_YoY_growth', ascending=False)
-        st.subheader('Top 10 States by Transaction Amount YoY Growth in 2024')
+        growth_latest_year = annual_summary[annual_summary['year'] == latest_year].sort_values(by='Transaction_amount_YoY_growth', ascending=False)
+        st.subheader(f'Top 10 States by Transaction Amount YoY Growth in {latest_year}')
         fig, ax = plt.subplots(figsize=(7, 5))
         sns.barplot(
-                data=growth_latest_year.head(10),
-                x='Transaction_amount_YoY_growth',
-                y='state',
-                palette='coolwarm',
-                ax=ax
-            )
+            data=growth_latest_year.head(10),
+            x='Transaction_amount_YoY_growth',
+            y='state',
+            palette='coolwarm',
+            ax=ax
+        )
         ax.set_xlabel('YoY Growth (%)')
         ax.set_ylabel('State')
         st.pyplot(fig)
-
         st.subheader("Quarterly State Performance Breakdown")
         col1, col2 = st.columns(2)
         with col1:
             quarters = st.slider("Select Quarter", Map_tran_tac_y["Quarter"].min(), Map_tran_tac_y["Quarter"].max(), Map_tran_tac_y["Quarter"].min())
         Map_tran_tac_y_Q = transaction_amount_count_Y_Q(Map_tran_tac_y, quarters)
-
         st.markdown(f"#### District-Level Quarterly Transaction Analysis for {states} (Q{quarters}, {years})")
         Map_insu_Districts(Map_tran_tac_y_Q, states)
-        
+                
 
 
         
@@ -829,28 +841,31 @@ elif select == "BUSINESS CASES" :
         st.subheader("Quarterly Insurance Performance Review by State")
         col1, col2 = st.columns(2)
         with col1:
-            quarters = st.slider("Select Quarter", 1, 4, 1)
+            quarters = st.slider("Select Quarter", Map_insu_tac_y["Quarter"].min(), Map_insu_tac_y["Quarter"].max(), Map_insu_tac_y["Quarter"].min())
         Map_insu_tac_y_Q = transaction_amount_count_Y_Q(Map_insu_tac_y, quarters)
 
         st.markdown(f"#### Quarterly District Insurance Transactions in {states} (Q{quarters}, {years})")
         Map_insu_Districts(Map_insu_tac_y_Q, states)
-        Agg_Insurance=pd.read_csv('D:\phonepe project\my_data6')
-        state_summary = Agg_Insurance.groupby('state')[['transaction_count', 'transaction_amount']].sum().sort_values(by='transaction_count', ascending=False)
-        st.subheader("Quarterly Insurance Transaction Trend - Top 5 States ")
+        state_summary = A_insurance.groupby('States')[['Insurance_count', 'Insurance_amount']].sum().sort_values(by='Insurance_count', ascending=False)
+
+        st.subheader("Quarterly Insurance Transaction Trend - Top 5 States")
+
+        # Get top 5 states by transaction count
         top_states = state_summary.head(5).index.tolist()
         fig, ax = plt.subplots(figsize=(10, 6))
         for state in top_states:
-            df = Agg_Insurance[Agg_Insurance['state'] == state]
-            df_grouped = df.groupby(['year', 'quater'])['transaction_count'].sum().reset_index()
-            df_grouped['Time'] = df_grouped['year'].astype(str) + ' Q' + df_grouped['quater'].astype(str)
-            ax.plot(df_grouped['Time'], df_grouped['transaction_count'], label=state, marker='o')
+            df = A_insurance[A_insurance['States'] == state]
+            # Group by year and quarter for transaction counts
+            df_grouped = df.groupby(['Years', 'Quarter'])['Insurance_count'].sum().reset_index()
+            # Create a column for time labels
+            df_grouped['Time'] = df_grouped['Years'].astype(str) + ' Q' + df_grouped['Quarter'].astype(str)
+            ax.plot(df_grouped['Time'], df_grouped['Insurance_count'], label=state, marker='o')
         ax.set_xlabel("Quarter")
         ax.set_ylabel("Transaction Count")
         plt.xticks(rotation=45)
         ax.legend()
         ax.grid(True)
         st.pyplot(fig)
-
 
 
     elif cases == "User Engagement and Growth Strategy":
@@ -868,30 +883,36 @@ elif select == "BUSINESS CASES" :
         states = st.selectbox("Select State", Map_user_Y_Q["States"].unique())
         st.markdown(f"#### Detailed User Engagement Metrics for {states} ({years}, Q{quarters})")
         map_user_plot_3(Map_user_Y_Q, states)
-        Map_User=pd.read_csv('D:\phonepe project\mydata8')  
-        state_summary = Map_User.groupby('state')[['registeredUsers', 'appOpens']].sum().sort_values(by='registeredUsers', ascending=False)
+        state_summary = M_user.groupby('States')[['RegisteredUsers', 'AppOpens']].sum().sort_values(by='RegisteredUsers', ascending=False)
         st.subheader('Registered and Active Users by State')
         st.dataframe(state_summary)
 
-        district_summary = Map_User.groupby(['state', 'district_name'])[['registeredUsers', 'appOpens']].sum().sort_values(by='registeredUsers', ascending=False)
+        # Group by state and district, aggregate and sort by registered users descending
+        district_summary = M_user.groupby(['States', 'District'])[['RegisteredUsers', 'AppOpens']].sum().sort_values(by='RegisteredUsers', ascending=False)
         st.subheader('Top Districts by Registered Users')
         st.dataframe(district_summary.head(20))
         top_states = state_summary.head(10).index
         st.subheader('Quarterly Registered Users Trend - Top 10 States')
         fig, ax = plt.subplots(figsize=(10, 6))
+
         for state in top_states:
-            df = Map_User[Map_User['state'] == state].groupby(['year', 'quater'])[['registeredUsers']].sum().reset_index()
-            df['Time'] = df['year'].astype(str) + ' Q' + df['quater'].astype(str)
-            ax.plot(df['Time'], df['registeredUsers'], label=state)
+            df = M_user[M_user['States'] == state].groupby(['Years', 'Quarter'])[['RegisteredUsers']].sum().reset_index()
+            df['Time'] = df['Years'].astype(str) + ' Q' + df['Quarter'].astype(str)
+            ax.plot(df['Time'], df['RegisteredUsers'], label=state)
+
         ax.set_xlabel('Time')
         ax.set_ylabel('Registered Users')
         plt.xticks(rotation=45)
         ax.legend()
         st.pyplot(fig)
-        Map_User['Engagement_Ratio'] = Map_User['appOpens'] / Map_User['registeredUsers']
-        Map_User.replace([float('inf'), -float('inf')], pd.NA, inplace=True)
-        Map_User.dropna(subset=['Engagement_Ratio'], inplace=True)
-        engagement_ratio = Map_User.groupby('state')['Engagement_Ratio'].mean().sort_values(ascending=False)
+
+        # Calculate Engagement Ratio and handle infinities or NaNs
+        M_user['Engagement_Ratio'] = M_user['AppOpens'] / M_user['RegisteredUsers']
+        M_user.replace([float('inf'), -float('inf')], pd.NA, inplace=True)
+        M_user.dropna(subset=['Engagement_Ratio'], inplace=True)
+
+        engagement_ratio = M_user.groupby('States')['Engagement_Ratio'].mean().sort_values(ascending=False)
+
         st.subheader('Top 10 States by Average User Engagement Ratio')
         fig, ax = plt.subplots(figsize=(10, 5))
         sns.barplot(x=engagement_ratio.head(10).index, y=engagement_ratio.head(10).values, ax=ax)
