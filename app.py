@@ -670,7 +670,7 @@ elif select == "BUSINESS CASES" :
 
        
       
-        # QUESTION 7 
+        # QUESTION 5
          st.header("5️⃣ Which top 10 states have untapped potential (low adoption vs user base)?")
 
          user_base = user_df.groupby('States')['RegisteredUser'].sum().reset_index()
@@ -693,7 +693,7 @@ elif select == "BUSINESS CASES" :
 
          
 
-        # ===================== QUESTION 8 =====================
+        # ===================== QUESTION 6=====================
          st.header("6️⃣ What are the regional variations in insurance penetration per 1,000 users?")
 
          merged['PenetrationPer1000'] = (merged['Insurance_count'] / merged['RegisteredUser']) * 1000
@@ -905,12 +905,6 @@ elif select == "BUSINESS CASES" :
             st.plotly_chart(fig1b, use_container_width=True)
 
         st.markdown("---")
-
-        
-
-      
-       
-
         # ===================== QUESTION 2 =====================
         st.header("2️⃣ What is the quarterly growth rate of active users across states?")
 
@@ -956,7 +950,7 @@ elif select == "BUSINESS CASES" :
 
         st.markdown("---")
 
-        # ===================== QUESTION 3 =====================
+        # ===================== QUESTION 4 =====================
         st.header("4️⃣ Which states or districts show under-engagement (low app opens vs users)?")
 
         under_engaged = opens_per_user.nsmallest(10, 'OpensPerUser')
@@ -972,7 +966,7 @@ elif select == "BUSINESS CASES" :
         st.plotly_chart(fig6, use_container_width=True)
 
         st.markdown("---")
-        # ===================== QUESTION 4 =====================
+        # ===================== QUESTION 5 =====================
         st.header(" 5️⃣Which state-category combinations drive higher engagement?")
 
         # Merge user data with transaction data
@@ -999,7 +993,7 @@ elif select == "BUSINESS CASES" :
         st.plotly_chart(fig8, use_container_width=True)
 
         st.markdown("---")
-        # ===================== QUESTION 10 =====================
+        # ===================== QUESTION 6 =====================
         st.header("6️⃣ What are the top 10 high-engagement districts supporting growth strategy?")
 
         district_engagement = filtered_user.groupby(['States', 'District']).agg({
@@ -1019,3 +1013,4 @@ elif select == "BUSINESS CASES" :
                     labels={'EngagementScore': 'Engagement Score'})
         fig10.update_layout(xaxis_tickangle=-45)
         st.plotly_chart(fig10, use_container_width=True)
+
