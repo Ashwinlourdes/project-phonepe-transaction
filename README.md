@@ -89,6 +89,8 @@ By analyzing registered users and app open data segmented by device brand and re
 
 3.Insurance Penetration & Growth Potential Analysis
 With increasing traction in its insurance offerings, PhonePe needs to identify states with high potential but low current adoption. This use case supports strategic marketing and partnership decisions in the insurance domain.
+
+
            1️ Which states contribute the most to total insurance transactions?
            2️ How has insurance transaction volume changed quarter-over-quarter?
            3️ What is the average policy value per state?
