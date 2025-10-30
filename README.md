@@ -74,7 +74,7 @@ PhonePe observed significant variations in transaction behavior across states, q
 
            1. Total Transaction Volumes Variation Across States Over the Years
            2. States with Highest Quarter-over-Quarter Growth Rate in Transactions
-           3. Average Transaction Value Trend Per State Across Quarters
+           3.Total Transaction Volume by State Wise?
            4. Payment Categories Comparison in Volume and Value Over Time
            5. Top 10 States Contributing Most to Total Transaction Value
 
@@ -82,7 +82,7 @@ PhonePe observed significant variations in transaction behavior across states, q
 By analyzing registered users and app open data segmented by device brand and region, this use case highlights how user engagement varies across devices—informing UI optimization, device-specific campaigns, and tech enhancements.
 
            1 the distribution of registered users by device brand?
-           2 app open counts compare across major device brands?
+           2  Total User Count by State
            3 How has device brand usage changed over time (quarterly trend)?
            4️ Which regions show dominance for specific device brands?
            5️ Which device brands are underperforming despite high user registrations?
@@ -95,7 +95,7 @@ With increasing traction in its insurance offerings, PhonePe needs to identify s
            2️ How has insurance transaction volume changed quarter-over-quarter?
            3️ What is the average policy value per state?
            4️ Which states demonstrate the fastest growth in insurance adoption?
-           5️ Which top 10 states have untapped potential (low adoption vs user base)
+           5️ What are the emerging states showing rapid growth in insurance adoption?
 
 4. Transaction Analysis for Market Expansion
 In a competitive market, identifying emerging regions with high transaction growth is key. This use case explores transaction volumes at the state level to pinpoint areas ripe for market penetration and expansion
@@ -105,15 +105,14 @@ In a competitive market, identifying emerging regions with high transaction grow
            3️ What is the average transaction growth rate across regions?
            4️ What are the top 10 fastest-growing districts in transaction value?
            5️ Which payment categories dominate in high-performing states?
-           6️ Which states experienced a slowdown or decline in recent quarters?
-
+           6️ Transaction Volume for Market Expansion by State
 
 
 5--User Engagement and Growth Strategy
 State-wise Summary: Total Registered Users & App Opens, User Growth Over Time for Top 5 States,Engagement Ratio by State (App Opens / Registered Users)**
 
            1️ Which states and districts have the highest registered user counts?
-           2️ What is the quarterly growth rate of active users across states?
+           2️ Registered Users by State
            3️ What is the ratio of app opens per user by state?
            4️ Which states or districts show under-engagement (low app opens vs users)?
            5️ Which state-category combinations drive higher engagement?
