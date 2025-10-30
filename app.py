@@ -3,7 +3,6 @@ from streamlit_option_menu import option_menu
 import pandas as pd
 import mysql.connector
 import plotly.express as px
-import plotly.graph_objects as go
 import requests
 
 
@@ -837,3 +836,4 @@ elif select == "BUSINESS CASES" :
                     labels={'EngagementScore': 'Engagement Score'})
         fig10.update_layout(xaxis_tickangle=-45)
         st.plotly_chart(fig10, use_container_width=True)
+
