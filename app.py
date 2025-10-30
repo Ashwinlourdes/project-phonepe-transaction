@@ -17,7 +17,7 @@ def get_connection():
         password="root",
         database="phonepedb1"
     )
-@st.cache_data(ttl=600)
+@st.cache_data()
 def load_table(table):
     db = get_connection()
     df = pd.read_sql(f"SELECT * FROM {table}", db)
@@ -1013,4 +1013,5 @@ elif select == "BUSINESS CASES" :
                     labels={'EngagementScore': 'Engagement Score'})
         fig10.update_layout(xaxis_tickangle=-45)
         st.plotly_chart(fig10, use_container_width=True)
+
 
