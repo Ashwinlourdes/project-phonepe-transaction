@@ -49,207 +49,88 @@ trans_df, user_df, device_df, insurance_df, map_trans_df = load_all_data()
 with st.sidebar:
     select = option_menu("MENU", ["HOME","BUSINESS CASES"])
 if select == "HOME":
-    st.markdown("### Dashboard Filters")
-    col1, col2, col3, col4 = st.columns(4)
+    st.markdown("""
+    Welcome! This interactive dashboard presents a comprehensive analysis of PhonePe’s transaction, user, and insurance datasets. It is built to help stakeholders understand the evolution of India’s digital payment ecosystem, assess adoption patterns, and identify strategic opportunities in a rapidly expanding financial technology landscape.""")
+    st.markdown("### Project Context ")
+    st.markdown("""
+    India’s digital payment ecosystem has transformed dramatically over the past decade, primarily driven by the Unified Payments Interface (UPI). Among the key players, PhonePe has emerged as a market leader, facilitating billions of transactions every month. Understanding these trends is critical for:  
+    \n**Domain:** Finance / Digital Payments.
+    \n**Product teams:** to design services tailored to user behavior.
+    \n**Marketing teams:** to identify high-growth regions and adoption barriers.
+    \n**Operations teams:** to mitigate risks and optimize resource allocation.
+    \nThis dashboard consolidates analytical frameworks from digital finance, consumer behavior, and economic geography with empirical data from PhonePe, enabling data-backed decision-making.""")
+    st.markdown("### Core Deliverables")
+    st.markdown("""
+    - Provides a macro-level perspective of India’s payment ecosystem.
+    - Helps predict future adoption trajectories for both payments and insurance.
+    - Supports policy and regulatory discussions around digital finance penetration.
+    - Acts as a knowledge base for practitioners, researchers, and policymakers.
+                Welcome to **PhonePe Transaction Insight** – a data-driven dashboard designed to uncover meaningful insights from PhonePe's digital transaction ecosystem.
 
-    with col1:
-        data_type = st.selectbox("Data Type", ["Transactions", "Users"])
+    This project leverages PhonePe Pulse data to provide a comprehensive view of transaction behaviors, user engagement, and market opportunities across India. It aims to support strategic business decisions through interactive visualizations and data analysis.
+ ---
+Welcome to **PhonePe Transaction Insight** – a data-driven dashboard designed to uncover meaningful insights from PhonePe's digital transaction ecosystem.
 
-    with col2:
-        # Use actual years from your data
-        year = st.selectbox("Year", sorted(trans_df['Years'].unique()))
+    This project leverages PhonePe Pulse data to provide a comprehensive view of transaction behaviors, user engagement, and market opportunities across India. It aims to support strategic business decisions through interactive visualizations and data analysis.""")
 
-    with col3:
-        quarter = st.selectbox("Quarter", [1, 2, 3, 4])
 
-    with col4:
-        states_list = ['All India'] + sorted(trans_df['States'].unique())
-        selected_region = st.selectbox("Region", states_list)
+    st.markdown(""" ###  Project Objective
 
-    # GEOJSON INDIA MAP
-    @st.cache_data
-    def load_geojson():
-        url = "https://gist.githubusercontent.com/jbrobst/56c13bbbf9d97d187fea01ca62ea5112/raw/e388c4cae20aa53cb5090210a42ebb9b765c0a36/india_states.geojson"
-        r = requests.get(url)
-        return r.json() if r.status_code == 200 else None
+    To analyze and visualize PhonePe’s transaction data across various dimensions—state, time period, category, and user demographics—to derive actionable insights that can drive business growth, product improvements, and policy decisions.
 
-    geojson = load_geojson()
+    ---
 
-    # DATA FETCH - CORRECTED TO USE YOUR TABLE NAMES
-    @st.cache_data
-    def get_transaction_summary(year, quarter):
-        df = trans_df[(trans_df['Years'] == year) & (trans_df['Quarter'] == quarter)]
-        summary = df.groupby('Transaction_type').agg({
-            'Transaction_count': 'sum',
-            'Transaction_amount': 'sum'
-        }).reset_index()
-        summary.columns = ['Transaction_type', 'Count', 'Amount']
-        return summary
+    ###  Business Use Cases
 
-    @st.cache_data
-    def get_top_districts(year, quarter):
-        df = map_trans_df[(map_trans_df['Years'] == year) & (map_trans_df['Quarter'] == quarter)]
-        top_districts = df.groupby('District')['Transaction_amount'].sum().nlargest(10).reset_index()
-        top_districts.columns = ['District', 'Amount']
-        return top_districts
-
-    @st.cache_data
-    def get_top_districts_by_state(year, quarter, state):
-        df = map_trans_df[(map_trans_df['Years'] == year) & 
-                          (map_trans_df['Quarter'] == quarter) & 
-                          (map_trans_df['States'] == state)]
-        top_districts = df.groupby('District')['Transaction_amount'].sum().nlargest(10).reset_index()
-        top_districts.columns = ['District', 'Amount']
-        return top_districts
-
-    @st.cache_data
-    def get_map_data(year, quarter):
-        df = trans_df[(trans_df['Years'] == year) & (trans_df['Quarter'] == quarter)]
-        state_data = df.groupby('States')['Transaction_amount'].sum().reset_index()
-        state_data.columns = ['States', 'Total']
-        return dict(zip(state_data["States"], state_data["Total"])), state_data
-
-    @st.cache_data
-    def get_statewise_transaction_categories(year, quarter):
-        df = trans_df[(trans_df['Years'] == year) & (trans_df['Quarter'] == quarter)]
-        pivot = df.pivot_table(index="States", columns="Transaction_type", 
-                               values="Transaction_amount", aggfunc='sum').fillna(0)
-        return pivot
-
-    @st.cache_data
-    def get_user_totals(year, quarter):
-        df = user_df[(user_df['Years'] == year) & (user_df['Quarter'] == quarter)]
-        user_data = df.groupby('States').agg({
-            'RegisteredUser': 'sum',
-            'AppOpens': 'sum'
-        }).reset_index()
-        user_data.columns = ['States', 'Registered', 'Opens']
-        return user_data
-
-    # DATA INSERT IN MAP
-    if data_type == "Transactions":
-        state_values, _ = get_map_data(year, quarter)
-        category_df = get_statewise_transaction_categories(year, quarter)
-        tooltip_label = "Total Transactions (₹)"
-    else:
-        state_values = {}
-        category_df = pd.DataFrame()
-        tooltip_label = "Total Users"
-
-    max_val = max(state_values.values()) if state_values and max(state_values.values()) > 0 else 1
-    user_df_filtered = get_user_totals(year, quarter) if data_type == "Users" else None
-
-    for f in geojson["features"]:
-        state = f["properties"]["ST_NM"]
-        val = state_values.get(state, 0)
-        elevation = (val / max_val) * 100
-        f["properties"]["elevation"] = elevation
-        
-        if data_type == "Transactions" and state in category_df.index:
-            cat_data = category_df.loc[state]
-            tooltip_text = f"{state}\nTotal: ₹{val:,.0f}"
-            for cat, amt in cat_data.items():
-                tooltip_text += f"\n{cat}: ₹{amt:,.0f}"
-        elif data_type == "Users":
-            state_data = user_df_filtered[user_df_filtered["States"] == state]
-            if not state_data.empty:
-                reg = int(state_data["Registered"].values[0])
-                opens = int(state_data["Opens"].values[0])
-                tooltip_text = f"{state}\nRegistered Users: {reg:,}\nApp Opens: {opens:,}"
-            else:
-                tooltip_text = f"{state}\nNo user data available"
-        else:
-            tooltip_text = f"{state}\n{tooltip_label}: ₹{val:,.0f}"
-        f["properties"]["tooltip"] = tooltip_text
-
-    # STRUCTURING
-    col1, col2 = st.columns([2, 2])
-
-    with col1:
-        st.markdown("#### Map Visualization")
-        view_state = pdk.ViewState(longitude=78.9629, latitude=22.5937, zoom=4, pitch=40)
-        layer = pdk.Layer(
-            "GeoJsonLayer",
-            data=geojson,
-            pickable=True,
-            extruded=True,
-            filled=True,
-            get_elevation="properties.elevation",
-            elevation_scale=1.5,
-            get_fill_color="[255 - properties.elevation * 2, 100, 200, 180]",
-            auto_highlight=True,
-        )
-        st.pydeck_chart(pdk.Deck(layers=[layer], initial_view_state=view_state, 
-                                  tooltip={"text": "{tooltip}"}))
-
-    with col2:
-        st.markdown("#### Transactions" if data_type == "Transactions" else "#### User Insights")
-
-        if data_type == "Transactions":
-            st.markdown("##### Transaction Summary")
-            full_txn_df = get_transaction_summary(year, quarter)
-            total_txn_count = full_txn_df["Count"].sum()
-            total_txn_amount = full_txn_df["Amount"].sum()
-            
-            if selected_region == "All India":
-                st.metric("Total Transactions", f"{int(total_txn_count):,}")
-                st.metric("Total Amount", f"₹{int(total_txn_amount):,}")
-            else:
-                state_df = trans_df[(trans_df['Years'] == year) & 
-                                    (trans_df['Quarter'] == quarter) & 
-                                    (trans_df['States'] == selected_region)]
-                state_count = state_df['Transaction_count'].sum()
-                state_amount = state_df['Transaction_amount'].sum()
-                st.metric(f"Total Transactions in {selected_region}", f"{int(state_count):,}")
-                st.metric(f"Total Amount in {selected_region}", f"₹{int(state_amount):,}")
-
-            st.markdown("---")
-            col_districts, col_states = st.columns(2)
-
-            with col_districts:
-                st.markdown("##### Top 10 Districts")
-                if selected_region == "All India":
-                    top_districts_df = get_top_districts(year, quarter)
-                else:
-                    top_districts_df = get_top_districts_by_state(year, quarter, selected_region)
+    #### 1. **Decoding Transaction Dynamics on PhonePe**
+    PhonePe observed significant variations in transaction behavior across states, quarters, and payment categories. This use case helps uncover patterns of growth, stagnation, or decline, enabling leadership to craft region-specific and category-specific strategies.
                 
-                for idx, row in top_districts_df.iterrows():
-                    st.markdown(f"- **{row['District']}**: ₹{row['Amount']:,.0f}")
+                    1. Total Transaction Volumes Variation Across States Over the Years
+                    2. States with Highest Quarter-over-Quarter Growth Rate in Transactions
+                    3. Average Transaction Value Trend Per State Across Quarters
+                    4. Payment Categories Comparison in Volume and Value Over Time
+                    5. Top 10 States Contributing Most to Total Transaction Value
 
-            with col_states:
-                st.markdown("##### Top 10 States")
-                _, state_df = get_map_data(year, quarter)
-                top_states_df = state_df.sort_values("Total", ascending=False).head(10)
-                for idx, row in top_states_df.iterrows():
-                    st.markdown(f"- **{row['States']}**: ₹{row['Total']:,.0f}")
+    #### 2. **Device Dominance and User Engagement Analysis**
+    By analyzing registered users and app open data segmented by device brand and region, this use case highlights how user engagement varies across devices—informing UI optimization, device-specific campaigns, and tech enhancements.
 
-        elif data_type == "Users":
-            st.markdown("##### Total Registered Users & App Opens")
-            df_users = get_user_totals(year, quarter)
-            total_registered = df_users["Registered"].sum()
-            total_opens = df_users["Opens"].sum()
-            
-            st.subheader("All India Summary")
-            st.metric("Registered Users", f"{int(total_registered):,}")
-            st.metric("App Opens", f"{int(total_opens):,}")
-            
-            if selected_region != "All India":
-                state_df = df_users[df_users["States"] == selected_region]
-                if not state_df.empty:
-                    state_reg = int(state_df["Registered"].values[0])
-                    state_open = int(state_df["Opens"].values[0])
-                    st.subheader(f"{selected_region} Summary")
-                    st.metric("Registered Users", f"{state_reg:,}")
-                    st.metric("App Opens", f"{state_open:,}")
-                else:
-                    st.warning("No user data available for the selected region.")
-            
-            st.markdown("###### Top 10 States by Total Users")
-            df_users["Total"] = df_users["Registered"] + df_users["Opens"]
-            df_top_states = df_users.sort_values("Total", ascending=False).head(10)
-            for idx, row in df_top_states.iterrows():
-                st.markdown(f"- **{row['States']}**: {int(row['Total']):,} users")
+                    1. the distribution of registered users by device brand?
+                    2. app open counts compare across major device brands?
+                    3. How has device brand usage changed over time (quarterly trend)?
+                    4. Which regions show dominance for specific device brands?
+                    5. Which device brands are underperforming despite high user registrations?
 
+    #### 3. **3.Insurance Penetration & Growth Potential Analysis**
+    With increasing traction in its insurance offerings, PhonePe needs to identify states with high potential but low current adoption. This use case supports strategic marketing and partnership decisions in the insurance domain.
+                
+                1. Which states contribute the most to total insurance transactions?
+                2. How has insurance transaction volume changed quarter-over-quarter?
+                3. What is the average policy value per state?
+                4. Which states demonstrate the fastest growth in insurance adoption?
+                5. Which top 10 states have untapped potential (low adoption vs user base)
+
+
+
+    #### 4. **Transaction Analysis for Market Expansion**
+    In a competitive market, identifying emerging regions with high transaction growth is key. This use case explores transaction volumes at the state level to pinpoint areas ripe for market penetration and expansion
+    
+                1. Which states record the highest transaction volumes and values?
+                2. How do quarterly trends differ between top-performing and emerging states?
+                3. What is the average transaction growth rate across regions?
+                4. What are the top 10 fastest-growing districts in transaction value?
+                5. Which payment categories dominate in high-performing states?
+                6. Which states experienced a slowdown or decline in recent quarters?
+
+    #### 5--**User Engagement and Growth Strategy**
+    State-wise Summary: Total Registered Users & App Opens, User Growth Over Time for Top 5 States,Engagement Ratio by State (App Opens / Registered Users),District-Level Analysis: Example for Maharashtra**
+               
+                1. Which states and districts have the highest registered user counts?
+                2. What is the quarterly growth rate of active users across states?
+                3. What is the ratio of app opens per user by state?
+                4. Which states or districts show under-engagement (low app opens vs users)?
+                5. Which state-category combinations drive higher engagement?
+                6. What are the top 10 high-engagement districts supporting growth strategy?
+""")
 elif select == "BUSINESS CASES" :
     case_study = st.selectbox(
     " Select Analysis Module",
@@ -999,6 +880,7 @@ elif select == "BUSINESS CASES" :
                     labels={'EngagementScore': 'Engagement Score'})
         fig10.update_layout(xaxis_tickangle=-45)
         st.plotly_chart(fig10, use_container_width=True)
+
 
 
 
