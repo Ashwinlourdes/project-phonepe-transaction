@@ -72,45 +72,47 @@ Business Use Cases
 1. Decoding Transaction Dynamics on PhonePe
 PhonePe observed significant variations in transaction behavior across states, quarters, and payment categories. This use case helps uncover patterns of growth, stagnation, or decline, enabling leadership to craft region-specific and category-specific strategies.
 
-           .Total Transaction Amount Trend by State
-           .Total Transaction Amount by State
-           .Quarterly Transaction by State
-           .Total Transaction trend by Transaction type
-           .Year-over-Year Growth by State
+           1. Total Transaction Volumes Variation Across States Over the Years
+           2. States with Highest Quarter-over-Quarter Growth Rate in Transactions
+           3. Average Transaction Value Trend Per State Across Quarters
+           4. Payment Categories Comparison in Volume and Value Over Time
+           5. Top 10 States Contributing Most to Total Transaction Value
 
 2. Device Dominance and User Engagement Analysis
 By analyzing registered users and app open data segmented by device brand and region, this use case highlights how user engagement varies across devices—informing UI optimization, device-specific campaigns, and tech enhancements.
 
-           .Top Device Brands by Total Users
-           .Brand Engagement % Across States
-           .Correlation of Registered Users and App Opens by Brand
-           .AppOpens_per_User Across States
-           .Top Underutilized Device Brands (Low Engagement Ratio)
+           1 the distribution of registered users by device brand?
+           2 app open counts compare across major device brands?
+           3 How has device brand usage changed over time (quarterly trend)?
+           4️ Which regions show dominance for specific device brands?
+           5️ Which device brands are underperforming despite high user registrations?
 
-3. Insurance Engagement Analysis
+3.Insurance Penetration & Growth Potential Analysis
 With increasing traction in its insurance offerings, PhonePe needs to identify states with high potential but low current adoption. This use case supports strategic marketing and partnership decisions in the insurance domain.
-
-           .Yearly State Insurance Transaction Summary
-           .District-Level Annual Insurance Activity
-           .Quarterly Insurance Performance Review by State
-           .Quarterly District Insurance Transactions 
-           .Quarterly Insurance Transaction Trend - Top 5 States
+           1️ Which states contribute the most to total insurance transactions?
+           2️ How has insurance transaction volume changed quarter-over-quarter?
+           3️ What is the average policy value per state?
+           4️ Which states demonstrate the fastest growth in insurance adoption?
+           5️ Which top 10 states have untapped potential (low adoption vs user base)
 
 4. Transaction Analysis for Market Expansion
 In a competitive market, identifying emerging regions with high transaction growth is key. This use case explores transaction volumes at the state level to pinpoint areas ripe for market penetration and expansion
 
-           .Transaction Count and Amount by State, Year, Quarter
-           .Top 10 States by Total Transaction Amount
-           .Top 10 States by Transaction Amount YoY Growth in 2024
-           .Potential States for Market Expansion (Low Amount, High Growth)
-           .Average Transaction value for State
+           1️ Which states record the highest transaction volumes and values?
+           2️ How do quarterly trends differ between top-performing and emerging states?
+           3️ What is the average transaction growth rate across regions?
+           4️ What are the top 10 fastest-growing districts in transaction value?
+           5️ Which payment categories dominate in high-performing states?
+           6️ Which states experienced a slowdown or decline in recent quarters?
+
+
 
 5--User Engagement and Growth Strategy
 State-wise Summary: Total Registered Users & App Opens, User Growth Over Time for Top 5 States,Engagement Ratio by State (App Opens / Registered Users)**
 
-            .Total Registered Users by State
-           .Quarterly Registered Users Trend - Top 10 States
-           .Top 10 States by Average User Engagement Ratio
-           .Districts in Maharashtra by Registered Users
-           .Registered and Active Users by State
-           .Top Districts by Registered Users
+           1️ Which states and districts have the highest registered user counts?
+           2️ What is the quarterly growth rate of active users across states?
+           3️ What is the ratio of app opens per user by state?
+           4️ Which states or districts show under-engagement (low app opens vs users)?
+           5️ Which state-category combinations drive higher engagement?
+           6️ What are the top 10 high-engagement districts supporting growth strategy?
