@@ -135,14 +135,15 @@ elif select == "BUSINESS CASES" :
     selected_states = st.selectbox(
         "Select States",
         options=['All']+all_states,
-        help="Choose one or more states to analyze"
+        help="Filter by specific state or view all states"
     )
 
     # Year filter
     selected_year = st.selectbox(
         "Select Year",
         options=['All'] + all_years,
-        help="Filter by specific year or view all years"
+         help="Filter by specific state or view all states"
+
     )
 
     # Quarter filter
@@ -844,3 +845,4 @@ elif select == "BUSINESS CASES" :
                     labels={'EngagementScore': 'Engagement Score'})
         fig10.update_layout(xaxis_tickangle=-45)
         st.plotly_chart(fig10, use_container_width=True)
+
