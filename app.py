@@ -17,7 +17,7 @@ def get_connection():
         password="root",
         database="phonepedb1"
     )
-@st.cache_data()
+@st.cache_data
 def load_table(table):
     db = get_connection()
     df = pd.read_sql(f"SELECT * FROM {table}", db)
@@ -27,13 +27,6 @@ def load_table(table):
     if 'Quarter' in df.columns:
         df['Quarter'] = df['Quarter'].astype(int)
     return df
-@st.cache_data
-def load_geojson():
-    url = "https://gist.githubusercontent.com/jbrobst/56c13bbbf9d97d187fea01ca62ea5112/raw/e388c4cae20aa53cb5090210a42ebb9b765c0a36/india_states.geojson"
-    r = requests.get(url)
-    return r.json() if r.status_code == 200 else None
-geojson = load_geojson()
-
 st.set_page_config(layout= "wide")
 st.markdown("<h1 style='text-align:center; margin:0;'>PHONEPE TRANSACTION INSIGHT</h1>", unsafe_allow_html=True)
 # ===================== LOAD DATA =====================
