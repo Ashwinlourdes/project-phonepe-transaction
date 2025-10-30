@@ -296,7 +296,7 @@ elif select == "BUSINESS CASES" :
 
     if case_study == "1. Transaction Dynamics":
             st.title("Transaction Dynamics on PhonePe")
-            st.header("1️⃣ How do total transaction volumes vary across states over the years?")
+            st.header("1️ How do total transaction volumes vary across states over the years?")
 
             vol_by_state_year = filtered_df.groupby(['States','Years'])['Transaction_count'].sum().reset_index()
 
@@ -315,10 +315,8 @@ elif select == "BUSINESS CASES" :
                             title='Top 10 States Contribution', hole=0.4)
             st.plotly_chart(fig1b, use_container_width=True)
 
-            st.markdown("---")
-
             #  QUESTION 2
-            st.header("2️⃣ Which states exhibit the highest growth rate in transactions quarter-over-quarter?")
+            st.header("2️ Which states exhibit the highest growth rate in transactions quarter-over-quarter?")
 
             trans_sorted = filtered_df.sort_values(['States', 'Years', 'Quarter'])
             trans_sorted['QoQ_Growth_%'] = trans_sorted.groupby('States')['Transaction_count'].pct_change() * 100
@@ -329,7 +327,7 @@ elif select == "BUSINESS CASES" :
             col1, col2 = st.columns(2)
 
             with col1:
-                st.subheader("🔥 Top 10 High-Growth States")
+                st.subheader(" Top 10 High-Growth States")
                 top_growth = avg_growth.head(10)
                 fig2a = px.bar(top_growth, 
                             x='States', 
@@ -353,7 +351,7 @@ elif select == "BUSINESS CASES" :
                 st.plotly_chart(fig2b, use_container_width=True)
 
             # ===================== QUESTION 3 =====================
-            st.header("3️⃣ What is the average transaction value trend per state across quarters?")
+            st.header("3️ What is the average transaction value trend per state across quarters?")
 
             filtered_df['AvgTransactionValue'] = filtered_df['Transaction_amount'] / filtered_df['Transaction_count']
             avg_value_trend = filtered_df.groupby(['States', 'Years', 'Quarter'])['AvgTransactionValue'].mean().reset_index()
@@ -370,7 +368,7 @@ elif select == "BUSINESS CASES" :
 
 
             #QUESTION 4 
-            st.header("4️⃣ How do payment categories compare in volume and value over time?")
+            st.header("4️ How do payment categories compare in volume and value over time?")
 
             cat_comparison = filtered_df.groupby(['Transaction_type', 'Years', 'Quarter']).agg({
                 'Transaction_count': 'sum',
@@ -402,7 +400,7 @@ elif select == "BUSINESS CASES" :
                 st.plotly_chart(fig4b, use_container_width=True)
 
             # Trend line
-            st.subheader("📊 Category Trend Over Quarters")
+            st.subheader(" Category Trend Over Quarters")
             fig4c = px.line(cat_comparison, 
                             x='Quarter', 
                             y='Transaction_count', 
@@ -412,9 +410,9 @@ elif select == "BUSINESS CASES" :
                             title='Transaction Volume Trend by Category')
             st.plotly_chart(fig4c, use_container_width=True)
 
-            st.markdown("---")
+            
             #QUESTION 5
-            st.header("5️⃣ Which top 10 states contribute the most to total transaction value?")
+            st.header("5️ Which top 10 states contribute the most to total transaction value?")
 
             top_states_value = filtered_df.groupby('States')['Transaction_amount'].sum().reset_index()
             top_states_value = top_states_value.sort_values('Transaction_amount', ascending=False).head(10)
@@ -444,7 +442,7 @@ elif select == "BUSINESS CASES" :
             total_value = filtered_df['Transaction_amount'].sum()
             top_states_value['Percentage'] = (top_states_value['Transaction_amount'] / total_value) * 100
 
-            st.markdown("---")
+
     elif case_study == "2. Device Dominance":
         filtered_device = device_df.copy()
         if selected_states != 'All':
@@ -454,7 +452,7 @@ elif select == "BUSINESS CASES" :
         if selected_quarter != 'All':
             filtered_device = filtered_device[filtered_device['Quarter'] == selected_quarter]
             # QUESTION 1
-        st.header("1️⃣ What is the distribution of registered users by device brand?")
+        st.header("1️ What is the distribution of registered users by device brand?")
 
         brand_dist = filtered_device.groupby('Brands')['Transaction_count'].sum().reset_index()
         brand_dist = brand_dist.sort_values('Transaction_count', ascending=False)
@@ -481,7 +479,7 @@ elif select == "BUSINESS CASES" :
             st.plotly_chart(fig1b, use_container_width=True)
 
         # QUESTION 2
-        st.header("2️⃣ How do app open counts compare across major device brands?")
+        st.header("2️ How do app open counts compare across major device brands?")
         # Show device brand engagement from available data
         brand_engagement = filtered_device.groupby('Brands').agg({
             'Transaction_count': 'sum',
@@ -499,10 +497,10 @@ elif select == "BUSINESS CASES" :
         fig2.update_layout(xaxis_tickangle=-45)
         st.plotly_chart(fig2, use_container_width=True)
 
-        st.markdown("---")
+        
 
         # QUESTION 3 
-        st.header("3️⃣ How has device brand usage changed over time (quarterly trend)?")
+        st.header("3️ How has device brand usage changed over time (quarterly trend)?")
 
         quarterly_trend = device_df.groupby(['Years', 'Quarter', 'Brands'])['Transaction_count'].sum().reset_index()
 
@@ -520,10 +518,10 @@ elif select == "BUSINESS CASES" :
                     labels={'Transactioncount': 'User Count'})
         st.plotly_chart(fig4, use_container_width=True)
 
-        st.markdown("---")
+        
 
         # QUESTION 4 
-        st.header("4️⃣ Which regions show dominance for specific device brands?")
+        st.header("4️ Which regions show dominance for specific device brands?")
 
         state_brand = filtered_device.groupby(['States', 'Brands'])['Transaction_count'].sum().reset_index()
 
@@ -541,7 +539,7 @@ elif select == "BUSINESS CASES" :
         st.plotly_chart(fig5, use_container_width=True)
 
         #QUESTION 5
-        st.header("5️⃣ Which device brands are underperforming despite high user registrations?")
+        st.header("5️ Which device brands are underperforming despite high user registrations?")
 
         # Calculate performance ratio (market share vs user count)
         brand_performance = filtered_device.groupby('Brands').agg({
@@ -577,7 +575,7 @@ elif select == "BUSINESS CASES" :
             filtered_insurance = filtered_insurance[filtered_insurance['Quarter'] == selected_quarter]
 
         #QUESTION 1 
-         st.header("1️⃣ Which states contribute the most to total insurance transactions?")
+         st.header("1️ Which states contribute the most to total insurance transactions?")
 
          top_states = filtered_insurance.groupby('States')['Insurance_count'].sum().reset_index()
          top_states = top_states.sort_values('Insurance_count', ascending=False).head(10)
@@ -605,7 +603,7 @@ elif select == "BUSINESS CASES" :
 
 
         #QUESTION 2
-         st.header("2️⃣ How has insurance transaction volume changed quarter-over-quarter?")
+         st.header("2️ How has insurance transaction volume changed quarter-over-quarter?")
 
          qtr_volume = filtered_insurance.groupby(['Years', 'Quarter'])['Insurance_count'].sum().reset_index()
          qtr_volume = qtr_volume.sort_values(['Years', 'Quarter'])
@@ -621,7 +619,7 @@ elif select == "BUSINESS CASES" :
          st.plotly_chart(fig2, use_container_width=True)
 
         # ===================== QUESTION 3 =====================
-         st.header("3️⃣ What is the average policy value per state?")
+         st.header("3️ What is the average policy value per state?")
 
          filtered_insurance['AvgPolicyValue'] = filtered_insurance['Insurance_amount'] / filtered_insurance['Insurance_count']
          avg_policy = filtered_insurance.groupby('States')['AvgPolicyValue'].mean().reset_index()
@@ -637,10 +635,10 @@ elif select == "BUSINESS CASES" :
          fig3.update_layout(xaxis_tickangle=-45)
          st.plotly_chart(fig3, use_container_width=True)
  
-         st.markdown("---")
+         
 
         # ===================== QUESTION 4 =====================
-         st.header("4️⃣ Which states demonstrate the fastest growth in insurance adoption?")
+         st.header("4️ Which states demonstrate the fastest growth in insurance adoption?")
 
          growth_data = filtered_insurance.groupby(['States', 'Years'])['Insurance_count'].sum().reset_index()
          growth_data = growth_data.sort_values(['States', 'Years'])
@@ -659,12 +657,12 @@ elif select == "BUSINESS CASES" :
          fig4.update_layout(xaxis_tickangle=-45)
          st.plotly_chart(fig4, use_container_width=True)
  
-         st.markdown("---")
+         
 
        
       
         # QUESTION 5
-         st.header("5️⃣ Which top 10 states have untapped potential (low adoption vs user base)?")
+         st.header("5️ Which top 10 states have untapped potential (low adoption vs user base)?")
 
          user_base = user_df.groupby('States')['RegisteredUser'].sum().reset_index()
          ins_adoption = filtered_insurance.groupby('States')['Insurance_count'].sum().reset_index()
@@ -687,7 +685,7 @@ elif select == "BUSINESS CASES" :
          
 
         # ===================== QUESTION 6=====================
-         st.header("6️⃣ What are the regional variations in insurance penetration per 1,000 users?")
+         st.header("6️ What are the regional variations in insurance penetration per 1,000 users?")
 
          merged['PenetrationPer1000'] = (merged['Insurance_count'] / merged['RegisteredUser']) * 1000
          top_penetration = merged.nlargest(15, 'PenetrationPer1000')
@@ -717,7 +715,7 @@ elif select == "BUSINESS CASES" :
             filtered_map = filtered_map[filtered_map['Quarter'] == selected_quarter]
 
         # ===================== QUESTION 1 =====================
-        st.header("1️⃣ Which states record the highest transaction volumes and values?")
+        st.header("1️ Which states record the highest transaction volumes and values?")
 
         state_metrics = filtered_agg.groupby('States').agg({
             'Transaction_count': 'sum',
@@ -750,7 +748,7 @@ elif select == "BUSINESS CASES" :
             st.plotly_chart(fig1b, use_container_width=True)
 
         # ===================== QUESTION 2 =====================
-        st.header("2️⃣ How do quarterly trends differ between top-performing and emerging states?")
+        st.header("2️ How do quarterly trends differ between top-performing and emerging states?")
 
         # Top 5 states
         top5_states = state_metrics.head(5)['States'].tolist()
@@ -768,10 +766,10 @@ elif select == "BUSINESS CASES" :
                     labels={'Transaction_count': 'Transaction Count'})
         st.plotly_chart(fig2, use_container_width=True)
 
-        st.markdown("---")
+        
 
         # ===================== QUESTION 3 =====================
-        st.header("3️⃣ What is the average transaction growth rate across regions?")
+        st.header("3️ What is the average transaction growth rate across regions?")
 
         growth_data = filtered_agg.groupby(['States', 'Years', 'Quarter'])['Transaction_count'].sum().reset_index()
         growth_data = growth_data.sort_values(['States', 'Years', 'Quarter'])
@@ -790,10 +788,10 @@ elif select == "BUSINESS CASES" :
         fig3.update_layout(xaxis_tickangle=-45)
         st.plotly_chart(fig3, use_container_width=True)
 
-        st.markdown("---")
+        
 
         # ===================== QUESTION 4 =====================
-        st.header("4️⃣ What are the top 10 fastest-growing districts in transaction value?")
+        st.header("4️ What are the top 10 fastest-growing districts in transaction value?")
 
         district_growth = filtered_map.groupby(['District', 'Years'])['Transaction_amount'].sum().reset_index()
         district_growth = district_growth.sort_values(['District', 'Years'])
@@ -811,10 +809,10 @@ elif select == "BUSINESS CASES" :
         fig6.update_layout(xaxis_tickangle=-45)
         st.plotly_chart(fig6, use_container_width=True)
 
-        st.markdown("---")
+    
 
         # ===================== QUESTION 5 =====================
-        st.header("5️⃣ Which payment categories dominate in high-performing states?")
+        st.header("5️ Which payment categories dominate in high-performing states?")
 
         category_state = filtered_agg[filtered_agg['States'].isin(top5_states)]
         category_metrics = category_state.groupby(['States', 'Transaction_type'])['Transaction_count'].sum().reset_index()
@@ -829,11 +827,11 @@ elif select == "BUSINESS CASES" :
         fig7.update_layout(xaxis_tickangle=-45)
         st.plotly_chart(fig7, use_container_width=True)
 
-        st.markdown("---")
+        
 
        
         # ===================== QUESTION 6 =====================
-        st.header("6️⃣Which states experienced a slowdown or decline in recent quarters?")
+        st.header("6️ Which states experienced a slowdown or decline in recent quarters?")
 
         recent_data =trans_df[trans_df['Years'] == trans_df['Years'].max()]
         recent_growth = recent_data.groupby(['States', 'Quarter'])['Transaction_count'].sum().reset_index()
@@ -852,7 +850,6 @@ elif select == "BUSINESS CASES" :
         fig9.update_layout(xaxis_tickangle=-45)
         st.plotly_chart(fig9, use_container_width=True)
 
-        st.markdown("---")
     elif case_study == "5. User Engagement":
         filtered_user = user_df.copy()
         if selected_states != 'All':
@@ -864,7 +861,7 @@ elif select == "BUSINESS CASES" :
 
 
         # ===================== QUESTION 1 =====================
-        st.header("1️⃣ Which states and districts have the highest registered user counts?")
+        st.header("1️ Which states and districts have the highest registered user counts?")
 
         # States
         state_users = filtered_user.groupby('States')['RegisteredUser'].sum().reset_index()
@@ -897,9 +894,8 @@ elif select == "BUSINESS CASES" :
             fig1b.update_layout(xaxis_tickangle=-45)
             st.plotly_chart(fig1b, use_container_width=True)
 
-        st.markdown("---")
         # ===================== QUESTION 2 =====================
-        st.header("2️⃣ What is the quarterly growth rate of active users across states?")
+        st.header("2️ What is the quarterly growth rate of active users across states?")
 
         quarterly_growth = user_df.groupby(['States', 'Years', 'Quarter'])['RegisteredUser'].sum().reset_index()
         quarterly_growth = quarterly_growth.sort_values(['States', 'Years', 'Quarter'])
@@ -918,9 +914,9 @@ elif select == "BUSINESS CASES" :
         fig3.update_layout(xaxis_tickangle=-45)
         st.plotly_chart(fig3, use_container_width=True)
 
-        st.markdown("---")
+        
         # ===================== QUESTION 3=====================
-        st.header("3️⃣ What is the ratio of app opens per user by state?")
+        st.header("3️ What is the ratio of app opens per user by state?")
         state_correlation = filtered_user.groupby('States').agg({
             'RegisteredUser': 'sum',
             'AppOpens': 'sum'
@@ -941,10 +937,9 @@ elif select == "BUSINESS CASES" :
         fig5.update_layout(xaxis_tickangle=-45)
         st.plotly_chart(fig5, use_container_width=True)
 
-        st.markdown("---")
 
         # ===================== QUESTION 4 =====================
-        st.header("4️⃣ Which states or districts show under-engagement (low app opens vs users)?")
+        st.header("4️ Which states or districts show under-engagement (low app opens vs users)?")
 
         under_engaged = opens_per_user.nsmallest(10, 'OpensPerUser')
 
@@ -958,9 +953,8 @@ elif select == "BUSINESS CASES" :
         fig6.update_layout(xaxis_tickangle=-45)
         st.plotly_chart(fig6, use_container_width=True)
 
-        st.markdown("---")
         # ===================== QUESTION 5 =====================
-        st.header(" 5️⃣Which state-category combinations drive higher engagement?")
+        st.header(" 5️ Which state-category combinations drive higher engagement?")
 
         # Merge user data with transaction data
         trans_by_state = trans_df.groupby(['States', 'Transaction_type', 'Years', 'Quarter'])['Transaction_count'].sum().reset_index()
@@ -985,9 +979,8 @@ elif select == "BUSINESS CASES" :
         fig8.update_layout(xaxis_tickangle=-45)
         st.plotly_chart(fig8, use_container_width=True)
 
-        st.markdown("---")
         # ===================== QUESTION 6 =====================
-        st.header("6️⃣ What are the top 10 high-engagement districts supporting growth strategy?")
+        st.header("6️ What are the top 10 high-engagement districts supporting growth strategy?")
 
         district_engagement = filtered_user.groupby(['States', 'District']).agg({
             'RegisteredUser': 'sum',
@@ -1006,5 +999,6 @@ elif select == "BUSINESS CASES" :
                     labels={'EngagementScore': 'Engagement Score'})
         fig10.update_layout(xaxis_tickangle=-45)
         st.plotly_chart(fig10, use_container_width=True)
+
 
 
